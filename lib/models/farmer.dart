@@ -29,15 +29,25 @@ class Farmer {
     };
   }
 
-  Future<String> addFarmer(Map<String, dynamic> farmerCredentials) async {
-    var result = await api.addFarm(Farmer(
-        username: username, email: email)); // We need to add the current userId
+   addFarmer(Map<String, dynamic> farmerCredentials) async {
+   
+    var result = await api.addFarmer(farmerCredentials); // We need to add the current userId
 
     if (result is String) {
       
-      return 'Error';
+      print( 'Error');
     } else {
-      return 'success';
+      print('success');
     }
+  }
+   updateFarmer(Map<String, dynamic> farmerCredentials) async {
+   
+    await api.updateFarmer(farmerCredentials); // We need to add the current userId
+
+  }
+ deleteFarmer(Map<String, dynamic> farmerCredentials) async {
+   
+    await api.deleteFarmer(farmerCredentials); // We need to add the current userId
+
   }
 }

@@ -3,23 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_works1/Widgets/Textfield.dart';
 import 'package:flutter_works1/Widgets/app_icons.dart';
 import 'package:flutter_works1/Widgets/loading_shimmer.dart';
-import 'package:flutter_works1/models/farmer.dart';
+import 'package:flutter_works1/Widgets/show_message.dart';
+import 'package:flutter_works1/models/farm.dart';
 import 'package:flutter_works1/screens/FarmerDetails.dart';
 
 List<AppIcons> appBarIcons = [
-  AppIcons(icon: Icons.add, semanticLabel: 'Add Referee')
+  AppIcons(icon: Icons.add, semanticLabel: 'Add Farms')
 ];
 
-class FarmersPage extends StatefulWidget {
-  FarmersPage({Key key}) : super(key: key);
+class FarmsPage extends StatefulWidget {
+  FarmsPage({Key key}) : super(key: key);
 
   @override
-  _FarmersPageState createState() => _FarmersPageState();
+  _FarmsPageState createState() => _FarmsPageState();
 }
 
-class _FarmersPageState extends State<FarmersPage> {
-  final emailaddressController = new TextEditingController();
-  final farmerNameController = new TextEditingController();
+class _FarmsPageState extends State<FarmsPage> {
+  final farmNameController = new TextEditingController();
+  final locationController = new TextEditingController();
+  final emailController = new TextEditingController();
   bool isUpdating = false;
 
   final _formKey = GlobalKey<FormState>();
@@ -35,7 +37,7 @@ class _FarmersPageState extends State<FarmersPage> {
     });
   }
 
-  Widget _addfarmsBtn() {
+  Widget _addBreedsBtn() {
     return InkWell(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {}));
@@ -49,29 +51,50 @@ class _FarmersPageState extends State<FarmersPage> {
           border: Border.all(color: Colors.cyan, width: 2),
         ),
         child: Text(
-          'Add Farms',
+          'Add Animal Breed',
           style: TextStyle(fontSize: 20, color: Colors.cyan),
         ),
       ),
     );
   }
 
-  Widget _addfarmerbtn(TextEditingController usernamecontroller,
-          TextEditingController emailController) =>
+  Widget _addfarmbtn(
+          TextEditingController farmNameController,
+          TextEditingController locationController,
+          TextEditingController emailController,
+          BuildContext ctx) =>
       Padding(
         padding: const EdgeInsets.only(top: 25),
         child: RaisedButton(
           onPressed: () {
             if (_formKey.currentState.validate()) {
-              Map<String, dynamic> farmerCredentials = {
-                "username": usernamecontroller.text.toString().trim(),
-                "email": emailaddressController.text.toString().trim(),
-              };
-              Farmer farmer = new Farmer();
-              print('farmer credts are ${farmerCredentials}');
-              farmer.addFarmer(farmerCredentials);
+              Future<QuerySnapshot> document = FirebaseFirestore.instance
+                  .collection('farmers')
+                  .where('email',
+                      isEqualTo: emailController.text.toString().trim())
+                  .get();
 
-              Navigator.of(context).pop();
+              document.then((QuerySnapshot documentSnapshot) {
+                if (documentSnapshot != null) {
+                  var farmer_id;
+                  documentSnapshot.docs.map((DocumentSnapshot document) {
+                    farmer_id = document;
+                    Map<String, dynamic> farmCredentials = {
+                      'farmerId': farmer_id,
+                      "farmName": farmNameController.text.toString().trim(),
+                      "location": locationController.text.toString().trim(),
+                    };
+                    Farm _farmer = new Farm();
+                    print('farmer credts are ${farmCredentials}');
+                    _farmer.addFarm(farmCredentials);
+
+                    Navigator.of(context).pop();
+                  });
+                  print('${farmer_id}');
+                } else {
+                  print('nonthing');
+                }
+              });
             }
           },
           color: Colors.blue,
@@ -81,7 +104,7 @@ class _FarmersPageState extends State<FarmersPage> {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           child: Text(
-            'Add Farmer',
+            'Add Farm',
             style: TextStyle(
               fontSize: 18,
               color: Colors.white,
@@ -107,7 +130,7 @@ class _FarmersPageState extends State<FarmersPage> {
               Padding(
                   padding: EdgeInsets.fromLTRB(20, 20, 0, 0),
                   child: Text(
-                    'Add Farmer',
+                    'Add Farm',
                     style: TextStyle(
                         color: Colors.blue,
                         fontSize: 20,
@@ -124,20 +147,20 @@ class _FarmersPageState extends State<FarmersPage> {
                           key: _formKey,
                           child: Column(
                             children: <Widget>[
-                              entryField("Username", farmerNameController),
-                              entryField(
-                                  "Email Address", emailaddressController),
+                              entryField('Farmer Email', emailController),
+                              entryField("Farm Name", farmNameController),
+                              entryField("Location", locationController),
                             ],
                           )),
                       SizedBox(
                         height: 20.0,
                       ),
-                      _addfarmsBtn(),
+                      _addBreedsBtn(),
                       SizedBox(
                         height: 30.0,
                       ),
-                      _addfarmerbtn(
-                          farmerNameController, emailaddressController),
+                      _addfarmbtn(farmNameController, locationController,
+                          emailController, context),
                     ],
                   ),
                 ),
@@ -149,11 +172,10 @@ class _FarmersPageState extends State<FarmersPage> {
 
   @override
   Widget build(BuildContext context) {
-    Farmer farmer = new Farmer();
+    Farm farm = new Farm();
     Stream collectionStream =
-        FirebaseFirestore.instance.collection('farmer').snapshots();
-    CollectionReference farmers =
-        FirebaseFirestore.instance.collection('farmer');
+        FirebaseFirestore.instance.collection('farm').snapshots();
+    CollectionReference farmers = FirebaseFirestore.instance.collection('farm');
     return Scaffold(
         appBar: AppBar(
           elevation: 4,
@@ -172,7 +194,7 @@ class _FarmersPageState extends State<FarmersPage> {
               .toList(),
           backgroundColor: Colors.white,
           title: const Text(
-            "Farmers",
+            "Farm",
             style: TextStyle(color: Colors.lightBlue),
           ),
         ),
@@ -195,26 +217,25 @@ class _FarmersPageState extends State<FarmersPage> {
               return new ListView(
                 children: documents.map((DocumentSnapshot document) {
                   return new ListTile(
-                    title: new Text(document.data()['username']),
-                    subtitle: new Text(document.data()['email']),
+                    title: new Text(document.data()['farmName']),
+                    subtitle: new Text(document.data()['location']),
                     onTap: () {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) {
-                             var doc_id2 = document.id;
+                        var doc_id2 = document.id;
                         Map<String, dynamic> farmerCredentials = {
-                          "username": document.data()['username'],
-                          'email': document.data()['email'],
-                          'farmerId':document.id
+                          "farmName": document.data()['farmName'],
+                          'location': document.data()['location'],
+                          'farmId': document.id
                         };
                         return FarmerDetail(farmerCredentials);
                       }));
                     },
                   );
-             
                 }).toList(),
               );
             }
-            return Text('nothing');
+            return Center(child: Text('empty'));
           },
         ));
   }

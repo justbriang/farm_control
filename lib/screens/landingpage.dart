@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_works1/screens/FarmersPage.dart';
+import 'package:flutter_works1/screens/farms/farmsPage.dart';
 
 class LandingPage extends StatefulWidget {
   LandingPage({Key key}) : super(key: key);
@@ -15,10 +16,7 @@ class _LandingPageState extends State<LandingPage> {
 
  List<Widget> _widgetOptions = <Widget>[
    FarmersPage(),
-    Text(
-      'Index 1: Business',
-      style: optionStyle,
-    ),
+    FarmsPage(),
     Text(
       'Index 2: School',
       style: optionStyle,

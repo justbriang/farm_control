@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class ShowMessage {
-  ShowMessage({@required BuildContext context, @required String message, Color backgroundColor}) {
-    _showMessage(context, message, backgroundColor);
+  ShowMessage(BuildContext context, {@required BuildContext ctx, @required String message, Color backgroundColor}) {
+    _showMessage(ctx, message, backgroundColor);
   }
 
   ScaffoldFeatureController _showMessage(
