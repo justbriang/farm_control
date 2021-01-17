@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1011714467395",
+    "project_id": "fugatest-587dd",
+    "storage_bucket": "fugatest-587dd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1011714467395:android:0889b1f60306739c7996f6",
+        "android_client_info": {
+          "package_name": "com.example.flutter_works1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1011714467395-khmqlurbe86s2n16f3ic670vq3gc72eu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCL6zvA1OUQoR51JTCzl3mXfN8XvVCLess"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1011714467395-khmqlurbe86s2n16f3ic670vq3gc72eu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
