@@ -2,31 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_works1/Widgets/Textfield.dart';
 import 'package:flutter_works1/Widgets/app_icons.dart';
 import 'package:flutter_works1/models/farm.dart';
-
+import 'package:date_time_picker/date_time_picker.dart';
+import 'package:flutter_works1/screens/farms/farmsPage.dart';
 
 List<AppIcons> appBarIcons = [
-  AppIcons(icon: Icons.add, semanticLabel: 'Add Referee')
+  AppIcons(icon: Icons.add, semanticLabel: 'Add farm')
 ];
 
-class FarmerDetail extends StatefulWidget {
+class AddFarm extends StatefulWidget {
   final Map<String, dynamic> farmCredentials;
-  FarmerDetail(this.farmCredentials, {Key key}) : super(key: key);
+  AddFarm(this.farmCredentials, {Key key}) : super(key: key);
 
   @override
-  _FarmerDetailState createState() => _FarmerDetailState(farmCredentials);
+  _AddFarmState createState() => _AddFarmState(farmCredentials);
 }
 
-class _FarmerDetailState extends State<FarmerDetail> {
+class _AddFarmState extends State<AddFarm> {
   Map<String, dynamic> farmCredentials;
-
+  DateTime scheduledVisit;
   final _formKey = GlobalKey<FormState>();
   final farmNameController = new TextEditingController();
   final locationController = new TextEditingController();
-  _FarmerDetailState(this.farmCredentials);
+  _AddFarmState(this.farmCredentials);
 
   @override
   Widget build(BuildContext context) {
-    final farmId = farmCredentials['farmId'];
+    final farmerId = farmCredentials['farmerId'];
+
     return Scaffold(
         appBar: AppBar(
           elevation: 4,
@@ -36,8 +38,8 @@ class _FarmerDetailState extends State<FarmerDetail> {
             style: TextStyle(color: Colors.lightBlue),
           ),
         ),
-        body: _buildContents(_formKey, farmNameController,
-            locationController, farmCredentials, farmId));
+        body: _buildContents(_formKey, farmNameController, locationController,
+            farmCredentials, farmerId));
   }
 
   Widget _editFarms() {
@@ -66,7 +68,7 @@ class _FarmerDetailState extends State<FarmerDetail> {
       TextEditingController farmNameController,
       TextEditingController locationController,
       Map<String, dynamic> farmCredentials,
-      final farmId) {
+      final farmerId) {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.only(top: 10, left: 30, right: 30),
@@ -78,16 +80,40 @@ class _FarmerDetailState extends State<FarmerDetail> {
                 key: _formKey,
                 child: Column(
                   children: <Widget>[
-                    editextfield(
-                        'Farm Name',
-                        farmCredentials['farmName'].toString(),
-                        farmNameController),
-                    editextfield(
-                        'location',
-                        farmCredentials["location"].toString(),
-                        locationController),
+                    entryField('Farm Name', farmNameController),
+                    entryField('location', locationController),
+                    DateTimePicker(
+                      initialValue: '',
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2100),
+                      dateLabelText: 'scheduled Visit',
+                      onChanged: (val) => print(val),
+                      validator: (val) {
+                        scheduledVisit = DateTime.parse(val);
+                        print(val);
+                        return null;
+                      },
+                      onSaved: (val) {
+                        print(val);
+                      },
+                    ),
                   ],
                 )),
+            Row(children: <Widget>[
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 15, right: 10),
+                  child: _addfarmbtn(
+                      farmNameController, locationController, farmerId),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 15, right: 10),
+                  child: _deletefarmbtn(farmerId),
+                ),
+              ),
+            ]),
             SizedBox(
               height: 20.0,
             ),
@@ -95,39 +121,22 @@ class _FarmerDetailState extends State<FarmerDetail> {
             SizedBox(
               height: 30.0,
             ),
-            Row(children: <Widget>[
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(left: 15, right: 10),
-                  child: _addfarmbtn(
-                      farmNameController, locationController, farmId),
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(left: 15, right: 10),
-                  child: _deletefarmbtn(farmId),
-                ),
-              ),
-            ])
           ],
         ),
       ),
     );
   }
 
-  Widget _deletefarmbtn(farmId) => Padding(
+  Widget _deletefarmbtn(farmerId) => Padding(
         padding: const EdgeInsets.only(top: 25),
         child: RaisedButton(
           onPressed: () {
-            
-              Map<String, dynamic> farmerCredentials = {'farmId': farmId};
-              Farm farm = new Farm();
-              print('farmer credts are ${farmerCredentials}');
-              farm.deleteFarm(farmerCredentials);
+            Map<String, dynamic> farmerCredentials = {'farmerId': farmerId};
+            Farm farm = new Farm();
 
-              Navigator.of(context).pop();
-            
+            farm.deleteFarm(farmerCredentials);
+
+            Navigator.of(context).pop();
           },
           color: Colors.red,
           focusColor: Colors.blue,
@@ -147,22 +156,35 @@ class _FarmerDetailState extends State<FarmerDetail> {
       );
 
   Widget _addfarmbtn(TextEditingController farmNameController,
-          TextEditingController locationController, final farmId) =>
+          TextEditingController locationController, final farmerId) =>
       Padding(
         padding: const EdgeInsets.only(top: 25),
         child: RaisedButton(
           onPressed: () {
             if (_formKey.currentState.validate()) {
-              Map<String, dynamic> farmCredentials = {
-                "farmName": farmNameController.text.toString().trim(),
-                "location": locationController.text.toString().trim(),
-                'farmId': farmId
-              };
-              Farm farm= new Farm();
-              print('farmer credts are ${farmCredentials}');
-              farm.updateFarm(farmCredentials);
+              Map<String, dynamic> farmCredentials;
 
-              Navigator.of(context).pop();
+              if (scheduledVisit == null) {
+                farmCredentials = {
+                  "farmName": farmNameController.text.toString().trim(),
+                  "location": locationController.text.toString().trim(),
+                  'farmerId': farmerId
+                };
+              } else {
+                farmCredentials = {
+                  "farmName": farmNameController.text.toString().trim(),
+                  "location": locationController.text.toString().trim(),
+                  'farmerId': farmerId,
+                  'scheduled Visit': scheduledVisit
+                };
+              }
+              Farm farm = new Farm();
+
+              farm.addFarm(farmCredentials);
+              Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => FarmsPage(farmerId)));
             }
           },
           color: Colors.blue,

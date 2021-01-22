@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Auth {
+  Auth.none();
   FirebaseAuth _auth;
   Auth(this._auth);
   Stream<User> get authStateChanges => _auth.authStateChanges();
@@ -27,9 +28,10 @@ class Auth {
   }
 
   Future<bool> register(Map<String, dynamic> userDetails) async {
+    print('$userDetails');
     try {
       final UserCredential user = await _auth.createUserWithEmailAndPassword(
-        email: userDetails['email'],
+       email: userDetails['email'],
         password: userDetails['password'],
       );
 

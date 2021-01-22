@@ -1,100 +1,67 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_works1/Widgets/Textfield.dart';
 import 'package:flutter_works1/Widgets/app_icons.dart';
 import 'package:flutter_works1/Widgets/loading_shimmer.dart';
-import 'package:flutter_works1/Widgets/show_message.dart';
+
 import 'package:flutter_works1/models/farm.dart';
-import 'package:flutter_works1/screens/FarmerDetails.dart';
+
+import 'package:flutter_works1/screens/farms/Addfarm.dart';
+import 'package:flutter_works1/screens/farms/farmdetail.dart';
 
 List<AppIcons> appBarIcons = [
   AppIcons(icon: Icons.add, semanticLabel: 'Add Farms')
 ];
 
 class FarmsPage extends StatefulWidget {
-  FarmsPage({Key key}) : super(key: key);
+  final String farmerId;
+  FarmsPage(this.farmerId, {Key key}) : super(key: key);
 
   @override
-  _FarmsPageState createState() => _FarmsPageState();
+  _FarmsPageState createState() => _FarmsPageState(farmerId);
 }
 
 class _FarmsPageState extends State<FarmsPage> {
+  String farmerId;
   final farmNameController = new TextEditingController();
   final locationController = new TextEditingController();
   final emailController = new TextEditingController();
   bool isUpdating = false;
-
+  DateTime scheduledVisit;
   final _formKey = GlobalKey<FormState>();
 
-  void _addFarmerWidget() {
-    showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        builder: (context) {
-          return _buildDialogContents();
-        }).whenComplete(() {
-      isUpdating = false;
-    });
-  }
+  _FarmsPageState(this.farmerId);
 
-  Widget _addBreedsBtn() {
-    return InkWell(
-      onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {}));
-      },
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.symmetric(vertical: 13),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-          border: Border.all(color: Colors.cyan, width: 2),
-        ),
-        child: Text(
-          'Add Animal Breed',
-          style: TextStyle(fontSize: 20, color: Colors.cyan),
-        ),
-      ),
-    );
-  }
-
-  Widget _addfarmbtn(
-          TextEditingController farmNameController,
-          TextEditingController locationController,
-          TextEditingController emailController,
-          BuildContext ctx) =>
+  
+  Widget _addfarmbtn(TextEditingController farmNameController,
+          TextEditingController locationController, final farmerId) =>
       Padding(
         padding: const EdgeInsets.only(top: 25),
         child: RaisedButton(
           onPressed: () {
             if (_formKey.currentState.validate()) {
-              Future<QuerySnapshot> document = FirebaseFirestore.instance
-                  .collection('farmers')
-                  .where('email',
-                      isEqualTo: emailController.text.toString().trim())
-                  .get();
+              Map<String, dynamic> farmCredentials;
 
-              document.then((QuerySnapshot documentSnapshot) {
-                if (documentSnapshot != null) {
-                  var farmer_id;
-                  documentSnapshot.docs.map((DocumentSnapshot document) {
-                    farmer_id = document;
-                    Map<String, dynamic> farmCredentials = {
-                      'farmerId': farmer_id,
-                      "farmName": farmNameController.text.toString().trim(),
-                      "location": locationController.text.toString().trim(),
-                    };
-                    Farm _farmer = new Farm();
-                    print('farmer credts are ${farmCredentials}');
-                    _farmer.addFarm(farmCredentials);
+              if (scheduledVisit == null) {
+                farmCredentials = {
+                  "farmName": farmNameController.text.toString().trim(),
+                  "location": locationController.text.toString().trim(),
+                  'farmerId': farmerId
+                };
+              } else {
+                farmCredentials = {
+                  "farmName": farmNameController.text.toString().trim(),
+                  "location": locationController.text.toString().trim(),
+                  'farmerId': farmerId,
+                  'scheduled Visit': scheduledVisit
+                };
+              }
+              Farm farm = new Farm();
 
-                    Navigator.of(context).pop();
-                  });
-                  print('${farmer_id}');
-                } else {
-                  print('nonthing');
-                }
-              });
+              farm.addFarm(farmCredentials);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => FarmsPage(farmerId)));
             }
           },
           color: Colors.blue,
@@ -113,7 +80,6 @@ class _FarmsPageState extends State<FarmsPage> {
           ),
         ),
       );
-
   Widget _buildDialogContents() => Container(
       color: Color(0xFF737373),
       child: Container(
@@ -147,20 +113,35 @@ class _FarmsPageState extends State<FarmsPage> {
                           key: _formKey,
                           child: Column(
                             children: <Widget>[
-                              entryField('Farmer Email', emailController),
                               entryField("Farm Name", farmNameController),
                               entryField("Location", locationController),
+                              DateTimePicker(
+                                initialValue: '',
+                                firstDate: DateTime(2000),
+                                lastDate: DateTime(2100),
+                                dateLabelText: 'scheduled Visit',
+                                onChanged: (val) => print(val),
+                                validator: (val) {
+                                  if (val != null && val != '') {
+                                    scheduledVisit = DateTime.parse(val);
+                                    print(val);
+                                  }
+                                  return null;
+                                },
+                                onSaved: (val) {
+                                  print(val);
+                                },
+                              ),
                             ],
                           )),
                       SizedBox(
                         height: 20.0,
                       ),
-                      _addBreedsBtn(),
+                      _addfarmbtn(
+                          farmNameController, locationController, farmerId),
                       SizedBox(
                         height: 30.0,
                       ),
-                      _addfarmbtn(farmNameController, locationController,
-                          emailController, context),
                     ],
                   ),
                 ),
@@ -172,71 +153,94 @@ class _FarmsPageState extends State<FarmsPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('im at farms oage');
     Farm farm = new Farm();
-    Stream collectionStream =
-        FirebaseFirestore.instance.collection('farm').snapshots();
-    CollectionReference farmers = FirebaseFirestore.instance.collection('farm');
+    Query collectionStream = FirebaseFirestore.instance
+        .collection('farm')
+        .where('farmerId', isEqualTo: farmerId);
+    void _addFarmerWidget() {
+      showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          builder: (context) {
+            return _buildDialogContents();
+          }).whenComplete(() {
+        isUpdating = false;
+      });
+    }
+
     return Scaffold(
-        appBar: AppBar(
-          elevation: 4,
-          actions: appBarIcons
-              .map<Widget>((iconDetails) => IconButton(
-                    onPressed: () {
-                      _addFarmerWidget();
-                    },
-                    icon: Icon(
-                      iconDetails.icon,
-                      size: 24.0,
-                      color: Colors.lightBlue,
-                      semanticLabel: iconDetails.semanticLabel,
-                    ),
-                  ))
-              .toList(),
-          backgroundColor: Colors.white,
-          title: const Text(
-            "Farm",
-            style: TextStyle(color: Colors.lightBlue),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.lightBlue,
+            size: 24.0,
+            semanticLabel: 'Go to settings',
           ),
-        ),
-        body: StreamBuilder<QuerySnapshot>(
-          stream: farmers.snapshots(),
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.hasError) {
-              return Text('Something went wrong');
-            }
-
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return LoadingProgressIndicator();
-            }
-            if (snapshot.hasData) {
-              final List<DocumentSnapshot> documents = snapshot.data.docs;
-              // print('=== data ===: ${farmer.toJson(snapshot.data);}');
-
-              // return Text('${snapshot.data}');
-              return new ListView(
-                children: documents.map((DocumentSnapshot document) {
-                  return new ListTile(
-                    title: new Text(document.data()['farmName']),
-                    subtitle: new Text(document.data()['location']),
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        var doc_id2 = document.id;
-                        Map<String, dynamic> farmerCredentials = {
-                          "farmName": document.data()['farmName'],
-                          'location': document.data()['location'],
-                          'farmId': document.id
-                        };
-                        return FarmerDetail(farmerCredentials);
-                      }));
-                    },
-                  );
-                }).toList(),
-              );
-            }
-            return Center(child: Text('empty'));
+          onPressed: () {
+            Navigator.pop(context);
           },
-        ));
+        ),
+        elevation: 4,
+        backgroundColor: Colors.white,
+        title: const Text(
+          "Farm",
+          style: TextStyle(color: Colors.lightBlue),
+        ),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: collectionStream.get().asStream(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Text('Something went wrong');
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return LoadingProgressIndicator();
+          }
+
+          if (snapshot.hasData) {
+            final List<DocumentSnapshot> documents = snapshot.data.docs;
+
+            return new ListView(
+              children: documents.map((DocumentSnapshot document) {
+                return new ListTile(
+                  title: new Text(document.data()['farmName']),
+                  subtitle: new Text(document.data()['location']),
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      var doc_id2 = document.id;
+                      Map<String, dynamic> farmerCredentials = {
+                        "farmName": document.data()['farmName'],
+                        'location': document.data()['location'],
+                        'farmId': document.id,
+                        'farmerId': document.data()['farmerId'],
+                        'scheduled Visit': document.data()['scheduled Visit']
+                      };
+                      return FarmDetail(farmerCredentials);
+                    }));
+                  },
+                );
+              }).toList(),
+            );
+          }
+          return Center(child: Text('empty'));
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Map<String, dynamic> farmerCredentials = {'farmerId': farmerId};
+          _addFarmerWidget();
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (context) => AddFarm(farmerCredentials)));
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.blueAccent,
+      ),
+    );
   }
 }

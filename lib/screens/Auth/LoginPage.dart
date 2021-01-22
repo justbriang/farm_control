@@ -1,13 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_works1/Widgets/BezierContainer.dart';
-import 'package:flutter_works1/screens/SignupPage.dart';
-import 'package:flutter_works1/screens/auth.dart';
+import 'package:flutter_works1/screens/Auth/SignupPage.dart';
+import 'package:flutter_works1/screens/Auth/sharedPref.dart';
+import 'package:flutter_works1/screens/Auth/validator.dart';
+
 import 'package:flutter_works1/screens/landingpage.dart';
-import 'package:flutter_works1/screens/sharedPref.dart';
-import 'package:flutter_works1/screens/validator.dart';
+
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+
+import 'auth.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.title}) : super(key: key);

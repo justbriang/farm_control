@@ -1,9 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_works1/screens/auth.dart';
+import 'package:flutter_works1/screens/Auth/auth.dart';
+
 import 'package:flutter_works1/screens/landingpage.dart';
-import 'package:flutter_works1/screens/sharedPref.dart';
+
 import 'package:flutter_works1/screens/welcomePage.dart';
 import 'package:provider/provider.dart';
 

@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_works1/Widgets/BezierContainer.dart';
 import 'package:flutter_works1/Widgets/Textfield.dart';
-import 'package:flutter_works1/screens/auth.dart';
-import 'package:flutter_works1/screens/validator.dart';
+import 'package:country_pickers/country_pickers.dart';
+import 'package:flutter_works1/screens/Auth/sharedPref.dart';
+import 'package:flutter_works1/screens/Auth/validator.dart';
+
+import 'package:flutter_works1/screens/landingpage.dart';
+
+
+
 
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import 'LoginPage.dart';
+import 'auth.dart';
 
 class SignUpPage extends StatefulWidget {
   SignUpPage({Key key, this.title}) : super(key: key);
@@ -18,6 +26,8 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  int prefix;
+  SharedPrefs _prefs = new SharedPrefs();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final usernameController = TextEditingController();
@@ -54,9 +64,14 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
- 
+  _loginuser() {
+    _prefs.signedin(true);
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => LandingPage()));
+  }
 
   Widget _submitButton() {
+    Auth auth = new Auth.none();
     return InkWell(
       onTap: () async {
         if (_formKey.currentState.validate()) {
@@ -66,12 +81,13 @@ class _SignUpPageState extends State<SignUpPage> {
             "email": emailController.text.toString().trim(),
             'password': passwordController.text.toString().trim(),
           };
-          //bool test = await auth.register(userCredentials);
-          //test
-              // ? Navigator.push(context,
-              //     MaterialPageRoute(builder: (context) => SignUpPage()))
-            //  ? print('worked')
-              //: print('failed');
+          bool test = await Provider.of<Auth>(context, listen: false)
+              .register(userCredentials);
+          test ? _loginuser() : print('failed');
+          // ? Navigator.push(context,
+          //     MaterialPageRoute(builder: (context) => SignUpPage()))
+          //  ? print('worked')
+          //: print('failed');
         }
       },
       child: Container(
@@ -161,9 +177,9 @@ class _SignUpPageState extends State<SignUpPage> {
         key: _formKey,
         child: Column(
           children: <Widget>[
-            entryField("Username",usernameController),
-            entryField("Email Address",emailController),
-            entryField("Password",passwordController, isPassword: true),
+            entryField("Username", usernameController),
+            entryField("Email Address", emailController),
+            entryField("Password", passwordController, isPassword: true),
           ],
         ));
   }

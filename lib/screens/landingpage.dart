@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_works1/screens/FarmersPage.dart';
+
+import 'package:flutter_works1/screens/Profile/profilePage.dart';
+import 'package:flutter_works1/screens/farmer/FarmersPage.dart';
+import 'package:flutter_works1/screens/farms/Schedules.dart';
 import 'package:flutter_works1/screens/farms/farmsPage.dart';
 
 class LandingPage extends StatefulWidget {
@@ -16,15 +19,9 @@ class _LandingPageState extends State<LandingPage> {
 
  List<Widget> _widgetOptions = <Widget>[
    FarmersPage(),
-    FarmsPage(),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 3: Agriculture',
-      style: optionStyle,
-    ),
+ 
+    SchedulePage(),
+    ProfileUI2(),
   ];
 
 
@@ -45,20 +42,17 @@ class _LandingPageState extends State<LandingPage> {
       bottomNavigationBar: BottomNavigationBar(
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.explore,color: Colors.lightBlue),
+          icon: Icon(Icons.agriculture_rounded,color: Colors.lightBlue),
           label: 'Farmers',
         ),
+       
         BottomNavigationBarItem(
-          icon: Icon(Icons.update,color: Colors.lightBlue),
-          label: 'Farms',
+          icon: Icon(Icons.calendar_today,color: Colors.lightBlue),
+          label: 'Schedules',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person,color: Colors.lightBlue),
-          label: 'School',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.agriculture,color: Colors.lightBlue),
-          label: 'Agriculture',
+          label: 'Profile',
         ),
       ],
       currentIndex: _selectedIndex,

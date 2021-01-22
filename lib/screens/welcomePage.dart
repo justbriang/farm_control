@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_works1/screens/Auth/LoginPage.dart';
+import 'package:flutter_works1/screens/Auth/SignupPage.dart';
 
-import 'package:flutter_works1/screens/LoginPage.dart';
-import 'package:flutter_works1/screens/SignupPage.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class WelcomePage extends StatefulWidget {
