@@ -5,6 +5,7 @@ import 'package:flutter_works1/Widgets/app_icons.dart';
 
 import 'package:flutter_works1/models/farmer.dart';
 import 'package:flutter_works1/screens/animals/animalpage.dart';
+import 'package:flutter_works1/screens/farmer/FarmersPage.dart';
 import 'package:flutter_works1/screens/farms/Addfarm.dart';
 
 import 'package:flutter_works1/screens/farms/farmsPage.dart';
@@ -55,7 +56,8 @@ class _FarmerDetailState extends State<FarmerDetail> {
               semanticLabel: 'Go to settings',
             ),
             onPressed: () {
-              Navigator.pop(context);
+                  Navigator.push(
+            context, MaterialPageRoute(builder: (context) => FarmersPage()));
             },
           ),
           elevation: 4,

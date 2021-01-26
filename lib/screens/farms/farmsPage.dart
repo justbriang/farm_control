@@ -7,8 +7,8 @@ import 'package:flutter_works1/Widgets/loading_shimmer.dart';
 
 import 'package:flutter_works1/models/farm.dart';
 
-import 'package:flutter_works1/screens/farms/Addfarm.dart';
 import 'package:flutter_works1/screens/farms/farmdetail.dart';
+import 'package:flutter_works1/screens/landingpage.dart';
 
 List<AppIcons> appBarIcons = [
   AppIcons(icon: Icons.add, semanticLabel: 'Add Farms')
@@ -33,7 +33,6 @@ class _FarmsPageState extends State<FarmsPage> {
 
   _FarmsPageState(this.farmerId);
 
-  
   Widget _addfarmbtn(TextEditingController farmNameController,
           TextEditingController locationController, final farmerId) =>
       Padding(
@@ -153,7 +152,6 @@ class _FarmsPageState extends State<FarmsPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('im at farms oage');
     Farm farm = new Farm();
     Query collectionStream = FirebaseFirestore.instance
         .collection('farm')
@@ -179,13 +177,14 @@ class _FarmsPageState extends State<FarmsPage> {
             semanticLabel: 'Go to settings',
           ),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => LandingPage()));
           },
         ),
         elevation: 4,
         backgroundColor: Colors.white,
         title: const Text(
-          "Farm",
+          "Farms",
           style: TextStyle(color: Colors.lightBlue),
         ),
       ),
@@ -233,10 +232,6 @@ class _FarmsPageState extends State<FarmsPage> {
         onPressed: () {
           Map<String, dynamic> farmerCredentials = {'farmerId': farmerId};
           _addFarmerWidget();
-          // Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (context) => AddFarm(farmerCredentials)));
         },
         child: Icon(Icons.add),
         backgroundColor: Colors.blueAccent,

@@ -147,6 +147,7 @@ class _AddAnimalPageState extends State<AddAnimalPage> {
         ),
       ),
       body: _buildContents(animalCountController, farmCredentials),
+      
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _addBreedWidget();

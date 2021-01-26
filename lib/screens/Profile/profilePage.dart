@@ -6,7 +6,6 @@ import 'package:flutter_works1/Widgets/Textfield.dart';
 import 'package:flutter_works1/models/animalBreed.dart';
 import 'package:flutter_works1/screens/Auth/LoginPage.dart';
 
-
 class ProfileUI2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -14,136 +13,37 @@ class ProfileUI2 extends StatelessWidget {
     final _width = MediaQuery.of(context).size.width;
     final _height = MediaQuery.of(context).size.height;
     final String imgUrl =
-        'https://pixel.nymag.com/imgs/daily/selectall/2017/12/26/26-eric-schmidt.w700.h700.jpg';
+        'https://images.all-free-download.com/images/graphiclarge/girl_portrait_514885.jpg';
     final _formKey = GlobalKey<FormState>();
     final breedNameController = new TextEditingController();
 
-    Widget _addBreedbtn(breedNameController, ctx) => Padding(
-          padding: const EdgeInsets.only(top: 25),
-          child: RaisedButton(
-            onPressed: () {
-              if (_formKey.currentState.validate()) {
-                Map<String, dynamic> breedCredentials = {
-                  "breed": breedNameController.text.toString().trim()
-                };
-                AnimalBreed breed = new AnimalBreed();
-
-                breed.addAnimal(breedCredentials);
-                final snackBar = SnackBar(
-                    content: Text('breed Successfully Updated'),
-                    backgroundColor: Colors.green);
-                globalKey.currentState.showSnackBar(snackBar);
-                Navigator.of(context).pop();
-              }
-            },
-            color: Colors.blue,
-            focusColor: Colors.blue,
-            disabledColor: Colors.blue,
-            padding: const EdgeInsets.all(13),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            child: Text(
-              'Add Farmer',
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        );
     Future<void> _signout() async {
       await FirebaseAuth.instance.signOut();
     }
 
-    Widget _addLogoutbtn() {
-      return InkWell(
-        onTap: () {
-          _signout();
-          Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => LoginPage()),
-              (Route<dynamic> route) => false);
-        },
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.symmetric(vertical: 13),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(5)),
-            border: Border.all(color: Colors.white, width: 2),
-          ),
-          child: Text(
-            'Logout',
-            style: TextStyle(fontSize: 20, color: Colors.white),
-          ),
-        ),
-      );
-    }
-
-    Widget _buildDialogContents() => Container(
-          color: Color(0xFF737373),
-          child: Container(
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(8.0),
-                    topRight: Radius.circular(8.0))),
-            child: Padding(
-              padding: MediaQuery.of(context).viewInsets,
-              // padding: EdgeInsets.only(
-              //     bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Padding(
-                      padding:  EdgeInsets.only(left: _width / 8, right: _width / 8),
-                      child: Text(
-                        'Add Farm',
-                        style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
-                      )),
-                  SingleChildScrollView(
-                    child: Padding(
-                      padding:
-                          const EdgeInsets.only(top: 10, left: 30, right: 30),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Form(
-                              key: _formKey,
-                              child: Column(
-                                children: <Widget>[
-                                  entryField("Farm Name", breedNameController),
-                                ],
-                              )),
-                          SizedBox(
-                            height: 20.0,
-                          ),
-                          SizedBox(
-                            height: 30.0,
-                          ),
-                          _addBreedbtn(breedNameController, context),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-
-    void _addBreedWidget() {
-      showModalBottomSheet(
-          context: context,
-          isScrollControlled: true,
-          builder: (context) {
-            return _buildDialogContents();
-          }).whenComplete(() {});
-    }
+    // Widget _addLogoutbtn() {
+    //   return InkWell(
+    //     onTap: () {
+    //       _signout();
+    //       Navigator.of(context).pushAndRemoveUntil(
+    //           MaterialPageRoute(builder: (context) => LoginPage()),
+    //           (Route<dynamic> route) => false);
+    //     },
+    //     child: Container(
+    //       width: MediaQuery.of(context).size.width,
+    //       padding: EdgeInsets.symmetric(vertical: 13),
+    //       alignment: Alignment.center,
+    //       decoration: BoxDecoration(
+    //         borderRadius: BorderRadius.all(Radius.circular(5)),
+    //         border: Border.all(color: Colors.white, width: 2),
+    //       ),
+    //       child: Text(
+    //         'Logout',
+    //         style: TextStyle(fontSize: 20, color: Colors.white),
+    //       ),
+    //     ),
+    //   );
+    // }
 
     return Stack(
       children: <Widget>[
@@ -167,9 +67,20 @@ class ProfileUI2 extends StatelessWidget {
             )),
         Scaffold(
             appBar: AppBar(
-              title: Center(child: Text('profile')),
+              title: Center(child: Text('Profile Page')),
               centerTitle: false,
               elevation: 0.0,
+              actions: <Widget>[
+                IconButton(
+                  icon: const Icon(Icons.logout),
+                  onPressed: () {
+                    _signout();
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (context) => LoginPage()),
+                        (Route<dynamic> route) => false);
+                  },
+                )
+              ],
               backgroundColor: Colors.transparent,
             ),
             backgroundColor: Colors.transparent,
@@ -217,27 +128,8 @@ class ProfileUI2 extends StatelessWidget {
                     ],
                   ),
                   Divider(height: _height / 30, color: Colors.white),
-                  _addLogoutbtn(),
+         
                   //TOdo: Move this elsewhere
-                  Padding(
-                    padding:
-                        EdgeInsets.only(left: _width / 8, right: _width / 8),
-                    child: FlatButton(
-                      onPressed: () => _addBreedWidget(),
-                      child: Container(
-                          child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Icon(Icons.person),
-                          SizedBox(
-                            width: _width / 30,
-                          ),
-                          Text('Add Breed')
-                        ],
-                      )),
-                      color: Colors.blue[50],
-                    ),
-                  ),
                 ],
               ),
             ))

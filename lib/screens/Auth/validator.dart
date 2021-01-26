@@ -27,6 +27,15 @@ class ValidatorClass {
               : 'Enter a valid Phone Number';
         }
         break;
+        case 'Breed Count':
+        if (value.isEmpty) {
+          return 'Please write something in $label';
+        } else {
+          return (telregExp.hasMatch(value))
+              ? null
+              : 'Enter a valid Number';
+        }
+        break;
       case 'Email Address':
         if (value.isEmpty) {
           return 'Please write something in $label';
@@ -45,28 +54,8 @@ class ValidatorClass {
               : 'Password is too weak. Should include uppercase, numbers and special chars.';
         }
         break;
-      case 'Institution Name':
-        if (value.isEmpty) {
-          return 'Please write something in $label';
-        } else if (value.length < 5) {
-          return 'Institution name is too short';
-        } else {
-          return (nameRegExp.hasMatch(value))
-              ? null
-              : 'Enter a valid Institution name';
-        }
-        break;
-      case 'Referee Name':
-        if (value.isEmpty) {
-          return 'Please write something in $label';
-        } else if (value.length < 5) {
-          return 'Referee Name is too short';
-        } else {
-          return (nameRegExp.hasMatch(value))
-              ? null
-              : 'Enter a valid Referee name';
-        }
-        break;
+   
+    
     }
   }
 }

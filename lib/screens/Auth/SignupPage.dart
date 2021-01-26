@@ -6,6 +6,7 @@ import 'package:flutter_works1/screens/Auth/sharedPref.dart';
 import 'package:flutter_works1/screens/Auth/validator.dart';
 
 import 'package:flutter_works1/screens/landingpage.dart';
+import 'package:flutter_works1/screens/welcomePage.dart';
 
 
 
@@ -32,7 +33,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final passwordController = TextEditingController();
   final usernameController = TextEditingController();
   ValidatorClass validate = new ValidatorClass();
-  //Auth auth = new Auth();
+
 
   final _formKey = GlobalKey<FormState>();
 
@@ -46,7 +47,8 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget _backButton() {
     return InkWell(
       onTap: () {
-        Navigator.pop(context);
+      Navigator.push(
+            context, MaterialPageRoute(builder: (context) => WelcomePage()));
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10),
@@ -106,7 +108,7 @@ class _SignUpPageState extends State<SignUpPage> {
             gradient: LinearGradient(
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
-                colors: [Color(0xfffbb448), Color(0xfff7892b)])),
+                colors: [Colors.blue, Colors.lightBlueAccent])),
         child: Text(
           'Register Now',
           style: TextStyle(fontSize: 20, color: Colors.white),
@@ -138,7 +140,7 @@ class _SignUpPageState extends State<SignUpPage> {
             Text(
               'Login',
               style: TextStyle(
-                  color: Color(0xfff79c4f),
+                  color: Colors.blue,
                   fontSize: 13,
                   fontWeight: FontWeight.w600),
             ),
@@ -157,7 +159,7 @@ class _SignUpPageState extends State<SignUpPage> {
             textStyle: Theme.of(context).textTheme.display1,
             fontSize: 30,
             fontWeight: FontWeight.w700,
-            color: Color(0xffe46b10),
+            color: Colors.blue,
           ),
           children: [
             TextSpan(
@@ -166,7 +168,7 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
             TextSpan(
               text: 'a',
-              style: TextStyle(color: Color(0xffe46b10), fontSize: 30),
+              style: TextStyle(color: Colors.blue, fontSize: 30),
             ),
           ]),
     );

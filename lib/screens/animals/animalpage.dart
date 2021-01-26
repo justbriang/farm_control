@@ -1,8 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
+import 'package:flutter_works1/Widgets/app_icons.dart';
 import 'package:flutter_works1/Widgets/loading_shimmer.dart';
-import 'package:flutter_works1/models/animal.dart';
-import 'package:flutter_works1/models/animalBreed.dart';
+
+
+List<AppIcons> appBarIcons = [
+  AppIcons(icon: Icons.add, semanticLabel: 'Add Referee')
+];
 
 class AnimalPage extends StatefulWidget {
   final String farmerId;
@@ -17,8 +22,13 @@ class AnimalPage extends StatefulWidget {
 class _AnimalPageState extends State<AnimalPage> {
   final String farmerId, checker;
 
+  var selectedbreed;
+  final animalCountController = new TextEditingController();
+  final globalKey = GlobalKey<ScaffoldState>();
+
   _AnimalPageState(this.farmerId, this.checker);
 
+  
   @override
   Widget build(BuildContext context) {
     Query collectionStream;
@@ -31,20 +41,22 @@ class _AnimalPageState extends State<AnimalPage> {
           .collection('animal')
           .where('farmId', isEqualTo: farmerId);
     }
+    
+   
+
     return Scaffold(
       appBar: AppBar(
-      
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.lightBlue,
-              size: 24.0,
-              semanticLabel: 'Go to settings',
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.lightBlue,
+            size: 24.0,
+            semanticLabel: 'Go to settings',
           ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         elevation: 4,
         backgroundColor: Colors.white,
         title: const Text(
@@ -70,7 +82,8 @@ class _AnimalPageState extends State<AnimalPage> {
               children: documents.map((DocumentSnapshot document) {
                 return new ListTile(
                   title: new Text(document.data()['breed']),
-                  subtitle: new Text(document.data()['Animal Count'].toString()),
+                  subtitle:
+                      new Text(document.data()['Animal Count'].toString()),
                   onTap: () {},
                 );
               }).toList(),
@@ -80,6 +93,8 @@ class _AnimalPageState extends State<AnimalPage> {
           }
         },
       ),
+
     );
   }
+  
 }

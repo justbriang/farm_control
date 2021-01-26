@@ -6,6 +6,7 @@ import 'package:flutter_works1/screens/Auth/sharedPref.dart';
 import 'package:flutter_works1/screens/Auth/validator.dart';
 
 import 'package:flutter_works1/screens/landingpage.dart';
+import 'package:flutter_works1/screens/welcomePage.dart';
 
 
 import 'package:google_fonts/google_fonts.dart';
@@ -41,7 +42,8 @@ class _LoginPageState extends State<LoginPage> {
   Widget _backButton() {
     return InkWell(
       onTap: () {
-        Navigator.pop(context);
+   Navigator.push(
+            context, MaterialPageRoute(builder: (context) => WelcomePage()));
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10),
@@ -125,7 +127,7 @@ class _LoginPageState extends State<LoginPage> {
             gradient: LinearGradient(
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
-                colors: [Color(0xfffbb448), Color(0xfff7892b)])),
+                colors: [Colors.blue, Colors.lightBlueAccent])),
         child: Text(
           'Login',
           style: TextStyle(fontSize: 20, color: Colors.white),
@@ -190,7 +192,7 @@ class _LoginPageState extends State<LoginPage> {
             Text(
               'Register',
               style: TextStyle(
-                  color: Color(0xfff79c4f),
+                  color:Colors.blueAccent,
                   fontSize: 13,
                   fontWeight: FontWeight.w600),
             ),
@@ -204,21 +206,21 @@ class _LoginPageState extends State<LoginPage> {
     return RichText(
       textAlign: TextAlign.center,
       text: TextSpan(
-          text: 'd',
+          text: 'F',
           style: GoogleFonts.portLligatSans(
             textStyle: Theme.of(context).textTheme.display1,
             fontSize: 30,
             fontWeight: FontWeight.w700,
-            color: Color(0xffe46b10),
+            color: Colors.blueAccent,
           ),
           children: [
             TextSpan(
-              text: 'ev',
+              text: 'u',
               style: TextStyle(color: Colors.black, fontSize: 30),
             ),
             TextSpan(
-              text: 'rnz',
-              style: TextStyle(color: Color(0xffe46b10), fontSize: 30),
+              text: 'ga',
+              style: TextStyle(color: Colors.blueAccent, fontSize: 30),
             ),
           ]),
     );

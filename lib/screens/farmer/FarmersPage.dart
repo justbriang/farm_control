@@ -28,17 +28,6 @@ class _FarmersPageState extends State<FarmersPage> {
   String prefix, countryName;
   final _formKey = GlobalKey<FormState>();
 
-  void _addFarmerWidget() {
-    showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        builder: (context) {
-          return _buildDialogContents();
-        }).whenComplete(() {
-      isUpdating = false;
-    });
-  }
-
   Widget _addfarmerbtn(
           TextEditingController usernamecontroller,
           TextEditingController emailController,
@@ -93,7 +82,7 @@ class _FarmersPageState extends State<FarmersPage> {
     );
   }
 
-  Widget _buildDialogContents() => Container(
+ Widget _buildDialogContents(context) => Container(
       color: Color(0xFF737373),
       child: Container(
         decoration: BoxDecoration(
@@ -173,6 +162,18 @@ class _FarmersPageState extends State<FarmersPage> {
   Widget build(BuildContext context) {
     CollectionReference farmers =
         FirebaseFirestore.instance.collection('farmer');
+    void _addFarmerWidget() {
+      showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          builder: (context) {
+            return _buildDialogContents(context);
+          }).whenComplete(() {
+        isUpdating = false;
+      });
+    }
+    
+
     return Scaffold(
       appBar: AppBar(
         elevation: 4,
@@ -221,8 +222,7 @@ class _FarmersPageState extends State<FarmersPage> {
                         'email': document.data()['email'],
                         'farmerId': document.id,
                         'telephone': document.data()['telephone'],
-                         'country': document.data()['country'],
-                         
+                        'country': document.data()['country'],
                       };
                       return FarmerDetail(farmerCredentials);
                     }));
